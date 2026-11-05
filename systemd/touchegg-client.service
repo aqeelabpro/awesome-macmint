@@ -1,0 +1,13 @@
+[Unit]
+Description=Touchégg gesture client for the current desktop session
+After=graphical-session.target
+PartOf=graphical-session.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/touchegg --client
+Restart=on-failure
+RestartSec=2
+
+[Install]
+WantedBy=default.target
