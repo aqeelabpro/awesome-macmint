@@ -32,7 +32,7 @@ To install just the theme and icons:
 ./install.sh --no-gestures
 ```
 
-Choose **MacMint** in Cinnamon's **Themes** settings to apply the visual theme. The installer does not change desktop settings automatically. If the gesture service could not start during installation, start it from a graphical login session with:
+The installer selects MacMint automatically and saves the existing theme, icon, cursor, and window-button settings for uninstall. Run it from a graphical Cinnamon session for the automatic selection and restore to work. If it was run outside that session, rerun it after logging in. If the gesture service could not start during installation, start it from a graphical login session with:
 
 ```sh
 systemctl --user enable --now touchegg-client.service
@@ -65,7 +65,7 @@ Run:
 ./uninstall.sh
 ```
 
-The installer backs up any existing MacMint theme, icon theme, Touchégg config, and service in `${XDG_DATA_HOME:-~/.local/share}/awesome-macmint/backup`. Uninstall removes the installed copies and restores those previous files. The backup is deleted after a successful restore. It does not alter Cinnamon theme selections.
+The installer backs up any existing MacMint theme, icon theme, Touchégg config, service, and current appearance settings in `${XDG_DATA_HOME:-~/.local/share}/awesome-macmint/backup`. Uninstall removes the installed copies and restores those previous files and settings automatically. The backup is deleted after a successful restore.
 
 ## Contributing
 

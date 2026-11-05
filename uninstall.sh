@@ -26,6 +26,17 @@ for i in "${!targets[@]}"; do
   fi
 done
 
+if [[ -f "$state_dir/.installed-appearance" && -f "$state_dir/appearance.tsv" ]]; then
+  if ! command -v gsettings >/dev/null || ! gsettings get org.cinnamon.desktop.interface gtk-theme >/dev/null 2>&1; then
+    printf 'Cannot restore saved appearance outside a graphical login session. Run uninstall.sh again from Cinnamon.\n' >&2
+    exit 1
+  fi
+  while IFS=$'\t' read -r schema key value; do
+    [[ -n "$schema" && -n "$key" && -n "$value" ]] || continue
+    gsettings set "$schema" "$key" "$value"
+  done < "$state_dir/appearance.tsv"
+fi
+
 if [[ -f "$state_dir/.installed-3" ]] && command -v systemctl >/dev/null && systemctl --user show-environment >/dev/null 2>&1; then
   systemctl --user daemon-reload
 fi

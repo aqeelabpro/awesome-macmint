@@ -35,6 +35,19 @@ data_home=${XDG_DATA_HOME:-"$HOME/.local/share"}
 config_home=${XDG_CONFIG_HOME:-"$HOME/.config"}
 state_dir="$data_home/awesome-macmint/backup"
 targets=("$HOME/.themes/MacMint" "$HOME/.icons/MacMint")
+appearance_keys=(
+  "org.cinnamon.desktop.interface gtk-theme MacMint"
+  "org.cinnamon.desktop.interface icon-theme MacMint"
+  "org.cinnamon.desktop.interface cursor-theme DMZ-White"
+  "org.cinnamon.theme name MacMint"
+  "org.cinnamon.desktop.wm.preferences theme MacMint"
+  "org.cinnamon.desktop.wm.preferences button-layout close,minimize,maximize:"
+  "org.gnome.desktop.interface gtk-theme MacMint"
+  "org.gnome.desktop.interface icon-theme MacMint"
+  "org.gnome.desktop.interface cursor-theme DMZ-White"
+  "org.gnome.desktop.wm.preferences theme MacMint"
+  "org.gnome.desktop.wm.preferences button-layout close,minimize,maximize:"
+)
 if (( with_gestures )); then
   targets+=("$config_home/touchegg/touchegg.conf" "$config_home/systemd/user/touchegg-client.service")
 fi
@@ -57,6 +70,24 @@ cp -a -- "$script_dir/themes/MacMint" "${targets[0]}"
 cp -a -- "$script_dir/icons/MacMint" "${targets[1]}"
 : > "$state_dir/.installed-0"
 : > "$state_dir/.installed-1"
+
+if command -v gsettings >/dev/null && gsettings get org.cinnamon.desktop.interface gtk-theme >/dev/null 2>&1; then
+  if [[ ! -f "$state_dir/.appearance-backed-up" ]]; then
+    : > "$state_dir/appearance.tsv"
+    for spec in "${appearance_keys[@]}"; do
+      read -r schema key _desired <<< "$spec"
+      printf '%s\t%s\t%s\n' "$schema" "$key" "$(gsettings get "$schema" "$key")" >> "$state_dir/appearance.tsv"
+    done
+    : > "$state_dir/.appearance-backed-up"
+  fi
+  : > "$state_dir/.installed-appearance"
+  for spec in "${appearance_keys[@]}"; do
+    read -r schema key desired <<< "$spec"
+    gsettings set "$schema" "$key" "$desired"
+  done
+else
+  printf 'Theme files installed. Apply MacMint from Cinnamon Themes after logging into the desktop.\n'
+fi
 
 if (( with_gestures )); then
   mkdir -p "$(dirname -- "${targets[2]}")" "$(dirname -- "${targets[3]}")"
