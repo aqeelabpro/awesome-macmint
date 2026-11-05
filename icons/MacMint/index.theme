@@ -1,0 +1,15 @@
+[Icon Theme]
+Name=MacMint
+Comment=Monochrome macOS-inspired sidebar icons for MacMint
+Inherits=Mint-Y
+Directories=16x16/places,16x16/actions
+
+[16x16/places]
+Size=16
+Context=Places
+Type=Fixed
+
+[16x16/actions]
+Size=16
+Context=Actions
+Type=Fixed
